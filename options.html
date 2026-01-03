@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>AlgoView 설정</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h2>⚙️ AlgoView 설정</h2>
+
+      <p class="description">
+        프로그래머스 문제 해결 시 자동으로 열릴<br />
+        <strong>'블로그 글쓰기 에디터' 주소</strong>를 입력해주세요.
+      </p>
+
+      <div class="input-group">
+        <label>블로그 플랫폼 선택</label>
+
+        <div class="custom-select-wrapper">
+          <div class="custom-select-trigger" id="platformTrigger">
+            <span>Velog (벨로그)</span>
+            <div class="arrow"></div>
+          </div>
+
+          <div class="custom-options">
+            <span class="custom-option selected" data-value="velog"
+              >Velog (벨로그)</span
+            >
+            <span class="custom-option" data-value="tistory"
+              >Tistory (티스토리)</span
+            >
+          </div>
+        </div>
+
+        <input type="hidden" id="platform" value="velog" />
+      </div>
+
+      <div class="input-group">
+        <label for="blogUrl">내 블로그 작성 페이지 URL</label>
+        <input
+          type="text"
+          id="blogUrl"
+          placeholder="예: https://velog.io/write"
+        />
+      </div>
+
+      <button id="saveBtn">설정 저장하기</button>
+      <div id="status"></div>
+    </div>
+
+    <script src="options.js"></script>
+  </body>
+</html>

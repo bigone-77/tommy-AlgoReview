@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "Tommy's AlgoReview - 프로그래머스 풀이 기록",
+  "version": "1.0",
+  "description": "프로그래머스 문제 해결 시 풀이 코드와 문제 정보를 자동으로 추출하여, 벨로그(Velog)에서 즉시 회고록을 작성할 수 있도록 템플릿을 생성해줍니다.",
+  "permissions": ["storage", "scripting"],
+  "host_permissions": [
+    "https://school.programmers.co.kr/*",
+    "https://velog.io/*",
+    "https://*.tistory.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://school.programmers.co.kr/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "options_page": "options.html",
+  "action": {
+    "default_title": "AlgoLog 설정",
+    "default_popup": "options.html"
+  }
+}

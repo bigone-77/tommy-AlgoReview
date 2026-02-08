@@ -1,47 +1,39 @@
+// background.js
+
+// 1. 블로그 자동 입력 함수 (Velog & Custom 지원)
 function autoFillPage(data, platform) {
   let titleInput = null;
 
-  if (platform === "tistory") {
+  if (platform === "custom") {
+    // [변경됨] 자유 형식: 최대한 다양한 제목 입력칸(id='title', placeholder='제목' 등)을 찾도록 시도
     titleInput =
-      document.querySelector(".textarea_tit") ||
+      document.querySelector('input[type="text"][placeholder*="제목"]') ||
+      document.querySelector('textarea[placeholder*="제목"]') ||
+      document.getElementById("title") ||
       document.getElementById("post-title") ||
-      document.querySelector('textarea[placeholder="제목을 입력하세요"]');
-
-    const modeBtn = document.querySelector("#editor-mode-layer-btn-open");
-
-    if (modeBtn && modeBtn.textContent.includes("기본모드")) {
-      const script = document.createElement("script");
-      script.textContent = "window.confirm = function(){ return true; };";
-      (document.head || document.documentElement).appendChild(script);
-      script.remove();
-
-      modeBtn.click();
-
-      setTimeout(() => {
-        const menuItems = document.querySelectorAll(".list_mode *");
-        for (let item of menuItems) {
-          if (item.textContent.trim() === "마크다운") {
-            item.click();
-            console.log("AlgoView: 마크다운 모드 전환 성공! ✨");
-            break;
-          }
-        }
-      }, 300);
-    }
+      document.querySelector(".title");
   } else {
+    // Velog 전용
     titleInput = document.querySelector(
-      'textarea[placeholder="제목을 입력하세요"]'
+      'textarea[placeholder="제목을 입력하세요"]',
     );
   }
 
+  // 제목 입력 처리
   if (titleInput) {
     titleInput.value = `[Algorithm] 프로그래머스 - ${data.title}`;
     titleInput.focus();
+    // 다양한 프레임워크(React, Vue 등) 대응을 위해 여러 이벤트 발송
     titleInput.dispatchEvent(new Event("input", { bubbles: true }));
     titleInput.dispatchEvent(new Event("change", { bubbles: true }));
+    titleInput.dispatchEvent(new KeyboardEvent("keydown", { bubbles: true }));
+    titleInput.dispatchEvent(new KeyboardEvent("keyup", { bubbles: true }));
     titleInput.blur();
+  } else {
+    console.log("AlgoView: 제목 입력칸을 자동으로 찾지 못했습니다.");
   }
 
+  // 템플릿 생성 (마크다운)
   const template = `
 ## 📚 문제 설명
 
@@ -73,6 +65,7 @@ function autoFillPage(data, platform) {
 * **배운 점:** * **아쉬운 점:** * **Time Complexity:** O(?)
 `;
 
+  // 클립보드 복사
   navigator.clipboard.writeText(template).then(() => {
     const notification = document.createElement("div");
     notification.innerHTML = `
@@ -96,18 +89,28 @@ function autoFillPage(data, platform) {
   });
 }
 
+// 2. 메시지 수신 및 처리
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.type === "OPEN_BLOG") {
     const problemData = request.payload;
 
-    chrome.storage.sync.get(["velogUrl", "tistoryUrl", "platform"], (data) => {
+    // 저장된 설정(URL, 플랫폼) 가져오기 (tistoryUrl -> customUrl 변경)
+    chrome.storage.sync.get(["velogUrl", "customUrl", "platform"], (data) => {
       const platform = data.platform || "velog";
 
       let targetUrl = "";
-      if (platform === "tistory") {
-        targetUrl = data.tistoryUrl || "https://tistory.com/manage/newpost";
+      if (platform === "custom") {
+        // [변경됨] 자유 형식 URL이 없으면 빈 문자열 (새 탭만 열림)
+        targetUrl = data.customUrl || "";
       } else {
         targetUrl = data.velogUrl || "https://velog.io/write";
+      }
+
+      // URL이 없으면 경고
+      if (!targetUrl && platform === "custom") {
+        alert("설정에서 블로그 URL을 먼저 입력해주세요!");
+        chrome.runtime.openOptionsPage();
+        return;
       }
 
       chrome.tabs.create({ url: targetUrl }, (tab) => {

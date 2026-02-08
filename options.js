@@ -1,12 +1,16 @@
+// options.js
+
+// 1. 플랫폼별 URL 저장 변수 (tistory -> custom 변경)
 const urlData = {
   velog: "",
-  tistory: "",
+  custom: "", // 자유 형식
 };
 let currentPlatform = "velog";
 
+// 2. Placeholder 문구 변경
 const placeholders = {
   velog: "예: https://velog.io/write",
-  tistory: "예: https://내블로그.tistory.com/manage/newpost",
+  custom: "예: https://blog.naver.com/..., https://tistory.com/...", // 범용 예시
 };
 
 function setupCustomSelect() {
@@ -57,10 +61,11 @@ function setupCustomSelect() {
 }
 
 function saveOptions() {
+  // 저장 키값 변경: tistoryUrl -> customUrl
   chrome.storage.sync.set(
     {
       velogUrl: urlData.velog,
-      tistoryUrl: urlData.tistory,
+      customUrl: urlData.custom,
       platform: currentPlatform,
     },
     () => {
@@ -72,14 +77,15 @@ function saveOptions() {
         status.textContent = "";
         status.className = "";
       }, 1500);
-    }
+    },
   );
 }
 
 function restoreOptions() {
-  chrome.storage.sync.get(["velogUrl", "tistoryUrl", "platform"], (items) => {
+  // 불러오기 키값 변경
+  chrome.storage.sync.get(["velogUrl", "customUrl", "platform"], (items) => {
     urlData.velog = items.velogUrl || "";
-    urlData.tistory = items.tistoryUrl || "";
+    urlData.custom = items.customUrl || ""; // 자유 형식 URL
 
     currentPlatform = items.platform || "velog";
     document.getElementById("platform").value = currentPlatform;

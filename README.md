@@ -1,4 +1,4 @@
-# 🚀 AlgoView (알고뷰)
+# 🚀 AlgoReview (알고리뷰)
 
 > **프로그래머스 문제 풀이를 자동으로 감지하고, 벨로그(Velog) & 티스토리(Tistory) 회고록 템플릿을 생성해주는 크롬 확장 프로그램**
 
@@ -85,6 +85,7 @@
 3. **회고록 작성**:
    - '정답입니다!' 화면과 함께 뜨는 모달창에서 **`🚀 회고록 쓰기`** 버튼을 클릭합니다.
    - 자동으로 열린 블로그 에디터 본문에 `Ctrl + V` (붙여넣기)를 하면 템플릿 작성이 끝납니다!
+```
 
 ---
 
@@ -93,8 +94,6 @@
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 Copyright (c) 2026 bigone-77
-
----
 
 ### 📬 Contact
 
